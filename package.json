@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@cljs-oss/module-deps": "^1.1.1",
+    "todomvc-app-css": "^2.2.0"
+  }
+}
