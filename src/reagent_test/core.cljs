@@ -16,14 +16,14 @@
                       {:id 2 :title "Second todo" :completed false :editing false}
                       {:id 3 :title "Third todo" :completed false :editing false})))
 
-(def change-state (map 
+(def change-test-state (map 
                    (fn [e] 
                      (if (= (:id e) 2) 
                        {:id (:id e) :title (:title e) :completed (:completed e) :editing true} 
                        e)) @test-state))
-(reset! test-state change-state)
+(reset! test-state change-test-state)
 ;(swap! change-state update-in [:editing] true)
-(println "change state" change-state)
+(println "change state" change-test-state)
 (println "test state" test-state)
 
 
@@ -93,6 +93,17 @@
   (def cancel-edit-state (map (fn [e] {:id (:id e) :title (:title e) :completed (:completed e) :editing false}) @app-state))
   (reset! app-state cancel-edit-state))
 
+(defn change-item [event item]
+  ;(reset! todo-input (.-value (.-target e)))
+  (def change-state (map
+                     (fn [e]
+                       (if (= (:id e) (:id item))
+                         {:id (:id e) :title (.-value (.-target event)) :completed (:completed e) :editing true}
+                         e)) @app-state))
+  ;(println "change state" change-state)
+  (reset! app-state change-state)
+  )
+
 (defn main-section [state]
   [:section {:class "todoapp"}
    [todo-header/component state]
@@ -102,7 +113,7 @@
              :type "checkbox"}]
     [:label {:htmlFor "toggle-all"} "Mark all as complete"]
     [:ul {:class "todo-list"}
-     (map #(todo-item/component % edit-item cancel-edit) @app-state)]]
+     (map #(todo-item/component % edit-item cancel-edit change-item) @app-state)]]
    [todo-footer/component]])
 
 (reagent/render-component [main-section app-state]
