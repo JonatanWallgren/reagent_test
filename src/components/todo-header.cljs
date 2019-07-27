@@ -8,12 +8,7 @@
   )
 
 (defn key-press [e todo-state]
-  ;(println (random-uuid))
-  ;(println @todo-state)
-  ; (println (.-key e))
-  ;(swap! app-state conj {:id random-id :title "First todo" :completed false :editing false})
   (if (= (.-key e) "Enter")
-    ;(println (str "{:id " (random-uuid) " :title " @todo-item " :completed false :editing false}"))
     (add-todo todo-state)
     nil)
   )

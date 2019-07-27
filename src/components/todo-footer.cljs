@@ -3,7 +3,6 @@
 (defn component [todo-count filter-callback delete-completed]
   [:footer {:class "footer"}
    [:span {:class "todo-count"}
-    ;[:strong todo-count] " items left"]
     [:strong todo-count] (str " item" (if (not= todo-count 1) "s" "") " left")]
    [:ul {:class "filters"}
     [:li
