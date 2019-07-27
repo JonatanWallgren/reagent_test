@@ -16,16 +16,26 @@
 (defn tester [e]
   (println "tester"))
 
-(defn component [item edit-callback cancel-callback edit-item-callback]
+(defn component [item edit-callback cancel-callback edit-item-callback delete-item-callback complete-item-callback]
   (println (item :editing))
   ;(reset! todo-input (item: :title))
   [:li {:key (item :id)
-        :class (if (item :editing) "editing" nil)}
+        :class (cond 
+                 (item :editing) "editing"
+                 (item :completed) "completed"
+                 :else nil)}
+   
+        ; :class (if (item :editing) 
+        ;          "editing"
+        ;          (if (item: :completed) "completed" nil))}
    [:div {:class "view"}
     [:input {:class "toggle"
-             :type "checkbox"}]
+             :type "checkbox"
+             :value (item :completed)
+             :on-click (fn [] (complete-item-callback (item :id)))}]
     [:label {:on-double-click (fn [e] (edit-callback e (item :id)))} (item :title)]
-    [:button {:class "destroy"}]]
+    [:button {:class "destroy"
+              :on-click (fn [] (delete-item-callback (item :id)))}]]
    [:input {:class "edit" 
             :value (item :title)
             :on-change (fn [event]

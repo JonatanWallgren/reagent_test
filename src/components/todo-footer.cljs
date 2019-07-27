@@ -1,12 +1,17 @@
 (ns reagent-test.components.todo-footer)
 
-(defn component []
+(defn component [todo-count filter-callback delete-completed]
   [:footer {:class "footer"}
    [:span {:class "todo-count"}
-    [:strong "42"] "items left"]
+    ;[:strong todo-count] " items left"]
+    [:strong todo-count] (str " item" (if (not= todo-count 1) "s" "") " left")]
    [:ul {:class "filters"}
     [:li
-     [:a {:href "#/"} "All"]
-     [:a {:href "#active"} "Active"]
-     [:a {:href "#completed"} "Completed"]]]
-   [:button {:class "Clear Completed"} "Clear completed"]])
+     [:a {:href "#/"
+          :on-click (fn [] (filter-callback (reagent-test.core.filters :all)))} "All"]
+     [:a {:href "#active"
+          :on-click (fn [] (filter-callback (reagent-test.core.filters :active)))} "Active"]
+     [:a {:href "#completed"
+          :on-click (fn [] (filter-callback (reagent-test.core.filters :completed)))} "Completed"]]]
+   [:button {:class "clear-completed"
+             :on-click delete-completed} "Clear completed"]])
