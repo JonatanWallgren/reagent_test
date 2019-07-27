@@ -2,7 +2,8 @@
   (:require [reagent.core :as reagent :refer [atom]]
             [reagent-test.components.todo-header :as todo-header]
             [reagent-test.components.todo-item :as todo-item]
-            [reagent-test.components.todo-footer :as todo-footer]))
+            [reagent-test.components.todo-footer :as todo-footer]
+            [alandipert.storage-atom :refer [local-storage]]))
 
 (enable-console-print!)
 
@@ -10,7 +11,9 @@
 
 (def current-filter (atom (filters :all)))
 
-(defonce app-state (atom ()))
+;(defonce app-state (atom ()))
+(def app-state (local-storage (atom ())
+                              :app-state))
 
 (defn hello-world []
   [:div

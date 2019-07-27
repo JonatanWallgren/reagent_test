@@ -92,7 +92,8 @@
              }
 
   :profiles {:dev {:dependencies [[binaryage/devtools "0.9.10"]
-                                  [figwheel-sidecar "0.5.19"]]
+                                  [figwheel-sidecar "0.5.19"]
+                                  [alandipert/storage-atom "2.0.1"]]
                    ;; need to add dev source path here to get user.clj loaded
                    :source-paths ["src" "dev"]
                    ;; need to add the compliled assets to the :clean-targets
