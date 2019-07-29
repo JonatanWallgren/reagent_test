@@ -8,9 +8,9 @@
     [:li
      [:a {:href "#/"
           :on-click (fn [] (filter-callback (reagent-test.core.filters :all)))} "All"]
-     [:a {:href "#active"
+     [:a {:href "#/active"
           :on-click (fn [] (filter-callback (reagent-test.core.filters :active)))} "Active"]
-     [:a {:href "#completed"
+     [:a {:href "#/completed"
           :on-click (fn [] (filter-callback (reagent-test.core.filters :completed)))} "Completed"]]]
    [:button {:class "clear-completed"
              :on-click delete-completed} "Clear completed"]])

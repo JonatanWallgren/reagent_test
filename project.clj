@@ -36,6 +36,8 @@
                            :asset-path "js/compiled/out"
                            :output-to "resources/public/js/compiled/reagent_test.js"
                            :output-dir "resources/public/js/compiled/out"
+                           :optimizations :none
+                           :source-map true
                            :source-map-timestamp true
                            ;; To console.log CLJS data-structures make sure you enable devtools in Chrome
                            ;; https://github.com/binaryage/cljs-devtools
@@ -93,7 +95,8 @@
 
   :profiles {:dev {:dependencies [[binaryage/devtools "0.9.10"]
                                   [figwheel-sidecar "0.5.19"]
-                                  [alandipert/storage-atom "2.0.1"]]
+                                  [alandipert/storage-atom "2.0.1"]
+                                  [clj-commons/secretary "1.2.4"]]
                    ;; need to add dev source path here to get user.clj loaded
                    :source-paths ["src" "dev"]
                    ;; need to add the compliled assets to the :clean-targets
