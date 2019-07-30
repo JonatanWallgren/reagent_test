@@ -25,51 +25,51 @@
 ; remove local def
 ; or explore using ->>
 (defn edit-item [e item-id]
-  (def edit-state (map
+  (let [edit-state (map
                    (fn [e]
                      (if (= (:id e) item-id)
                        {:id (:id e) :title (:title e) :completed (:completed e) :editing true}
-                       e)) @app-state))
-  (reset! app-state edit-state))
+                       e)) @app-state)]
+  (reset! app-state edit-state)))
 
 (defn todo-complete [item-id]
-  (def complete-state (doall (map (fn [item] 
+  (let [complete-state (doall (map (fn [item] 
                                     (if (= (:id item) item-id)
                                       {:id (:id item) :title (:title item) :completed true :editing (:editing item)}
-                                      item)) @app-state)))
-  (reset! app-state complete-state))
+                                      item)) @app-state))]
+  (reset! app-state complete-state)))
 
 ; consider just assoc the updated key
 ; avoid lazy seq
 ; consider doall with for or mapv (not lazy)
 (defn cancel-edit [e]
-  (def cancel-edit-state (map (fn [e] {:id (:id e) :title (:title e) :completed (:completed e) :editing false}) @app-state))
-  (reset! app-state cancel-edit-state))
+  (let [cancel-edit-state (map (fn [e] {:id (:id e) :title (:title e) :completed (:completed e) :editing false}) @app-state)]
+  (reset! app-state cancel-edit-state)))
 
 (defn delete-item [item-id]
   ; replace local def with let!
   ; lazy remove!
-  (def delete-item-state (remove (fn [item] (= item-id (:id item))) @app-state))
-  (reset! app-state delete-item-state))
+  (let [delete-item-state (remove (fn [item] (= item-id (:id item))) @app-state)]
+  (reset! app-state delete-item-state)))
 
 ; consider changing vector to map
 (defn change-item [event item]
   ; replace local def with let!
-  (def change-state (doall (map
+  (let [change-state (doall (map
                      (fn [e]
                        (if (= (:id e) (:id item))
                          {:id (:id e) :title (.-value (.-target event)) :completed (:completed e) :editing true}
-                         e)) @app-state)))
-  (reset! app-state change-state))
+                         e)) @app-state))]
+  (reset! app-state change-state)))
 
 (defn set-filter [filter]
   (reset! current-filter filter))
 
 (defn delete-completed-items []
   ; replace local def with let!
-  (def items-to-delete (map :id (filter #(= (:completed %) true) @app-state)))
+  (let [items-to-delete (map :id (filter #(= (:completed %) true) @app-state))]
   (doseq [id items-to-delete] 
-    (delete-item id)))
+    (delete-item id))))
 
 (defn main-section [state]
 
