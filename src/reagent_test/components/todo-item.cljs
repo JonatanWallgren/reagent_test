@@ -3,6 +3,7 @@
 ;check destructure item
 
 (defn component [item edit-callback cancel-callback edit-item-callback delete-item-callback complete-item-callback]
+  
   [:li {:key (item :id)
         ;change key value
         ;check else condition
