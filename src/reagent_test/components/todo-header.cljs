@@ -9,9 +9,8 @@
 
 ;if replaced with when
 (defn key-press [e todo-state]
-  (if (= (.-key e) "Enter")
-    (add-todo todo-state)
-    nil))
+  (when (= (.-key e) "Enter")
+    (add-todo todo-state)))
 
 (defn input-change [e]
   (reset! todo-item (.-value (.-target e))))

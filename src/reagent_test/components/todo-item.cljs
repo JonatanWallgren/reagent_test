@@ -4,31 +4,28 @@
 
 (defn component [item edit-callback cancel-callback edit-item-callback delete-item-callback complete-item-callback]
   
-  [:li {:key (item :id)
+  [:li {:key (:id item)
         ;change key value
         ;check else condition
         :class (cond
-                 (item :editing) "editing"
-                 (item :completed) "completed"
-                 :else nil)}
+                 (:editing item) "editing"
+                 (:completed item) "completed")}
    [:div {:class "view"}
     [:input {:class "toggle"
              :type "checkbox"
-             :value (item :completed)
-             :on-click (fn [] (complete-item-callback (item :id)))}]
-    [:label {:on-double-click (fn [e] (edit-callback e (item :id)))} (item :title)]
+             :value (:completed item)
+             :on-click (fn [] (complete-item-callback (:id item)))}]
+    [:label {:on-double-click (fn [e] (edit-callback e (:id item)))} (:title item)]
     [:button {:class "destroy"
-              :on-click (fn [] (delete-item-callback (item :id)))}]]
+              :on-click (fn [] (delete-item-callback (:id item)))}]]
    ;replace if with when
    [:input {:class "edit"
-            :value (item :title)
+            :value (:title item)
             :on-change (fn [event]
-                         (if (item :editing)
-                           (edit-item-callback event item)
-                           nil))
+                         (when (:editing item)
+                           (edit-item-callback event item)))
             :ref (fn [el]
-                   (if (and (item :editing) el)
-                     (.focus el)
-                     nil))
+                   (when (and (:editing item) el)
+                     (.focus el)))
             :on-blur (fn [e]
                        (cancel-callback e))}]])
