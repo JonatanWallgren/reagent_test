@@ -7,7 +7,6 @@
 
 
 (enable-console-print!)
-(println "core1")
 ; (keyword :all)
 ; (keyword :completed)
 ; (keyword :active)
@@ -27,6 +26,27 @@
 ;(defonce app-state (atom ()))
 (def app-state (local-storage (atom ())
                               :app-state))
+; (->> maps
+;      (filter #(= (:id %) id))
+;      first)
+; (defn get-new-users
+;   [coll]
+;   (map #(if (= (:user-id %) "mary") (assoc % :age 8) %) coll))
+
+;(map (fn [x] (update x :name #(if (= "name2" %) % "not 2"))) ds)
+
+(defn update-item [item state]
+  (println "the item" item)
+  (let [new-state (doall (map #(if        
+                                (= (:id %) (:id item)) 
+                                 item
+                                 %) 
+                              state))]
+    (reset! app-state new-state)))
+
+; ({:id #uuid "a9367955-44d3-4ffc-9d73-d96b8d8faf9a", :title test 3, :completed false, :editing false} 
+;  {:id #uuid "8a7330b2-e418-4156-9524-35212ced6fb5", :title test 2, :completed true, :editing false} 
+;  {:id #uuid "3862d583-c8ed-4b90-b74f-539d9f2efa0c", :title test 1, :completed false, :editing false})
 
 ; can you introduce a generic update fn?, update this id to this item, or iten would actually have its own id. 
 ; explore using a map id->item? need to deal with order somehow
@@ -42,19 +62,30 @@
 
 (defn todo-complete [item-id]
 
+  (let [test (first (filter 
+                     #(when 
+                       (= (:id %) item-id) 
+                        %) 
+                     @app-state))] 
+    (do 
+      (let 
+       [comp (not (:completed test))]
+        (update-item (assoc test :completed comp) @app-state)))))
   ; (let [complete-state (doall (map (fn [item]
   ;                                    (case item
   ;                                      (= (:id item) item-id) (not (:completed item)) {:id (:id item) :title (:title item) :completed true :editing (:editing item)}
   ;                                      (= (:id item) item-id) (:completed item) {:id (:id item) :title (:title item) :completed false :editing (:editing item)}
   ;                                      item)) @app-state))
-  (let [complete-state (doall 
-                        (map 
-                         (fn [item] 
-                           (case item
-                             (= (:id item) item-id) (not (:completed item)) {:id (:id item) :title (:title item) :completed true :editing (:editing item)}
-                             (= (:id item) item-id) (:completed item) {:id (:id item) :title (:title item) :completed false :editing (:editing item)}
-                             item)) @app-state))]
-    (reset! app-state complete-state)))
+  ; (let [complete-state (doall
+  ;                       (map
+  ;                        (fn [item]
+  ;                            (case item
+  ;                              (= (:id item) item-id) (not (:completed item)) {:id (:id item) :title (:title item) :completed true :editing (:editing item)}
+  ;                              (= (:id item) item-id) (:completed item) {:id (:id item) :title (:title item) :completed false :editing (:editing item)}
+  ;                              item)) @app-state))]
+  ;   (do
+  ;     (println complete-state)
+  ;     (reset! app-state complete-state))))
   ;       (reset! app-state complete-state)])) 
                                     ;  (case item
                                     ;    (= (:id item) item-id) (not (:completed item)) {:id (:id item) :title (:title item) :completed true :editing (:editing item)}
@@ -108,7 +139,7 @@
       (delete-item id))))
 
 (defn main-section [state]
-  (println state)
+  (println "main" state)
   [:section {:class "todoapp"}
    [todo-header/component state]
    [:section {:class "main"}
