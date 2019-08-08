@@ -3,15 +3,18 @@
 
 (def todo-item (atom ""))
 
-;look at name spaced keyword
 (defn add-todo [todo-state]
-  (swap! todo-state conj {:id (random-uuid) :title @todo-item :completed false :editing false}))
+  (let [uuid (random-uuid)]
+
+    (swap! reagent-test.core/app-test-spike assoc uuid {:id uuid
+                                :title @todo-item
+                                :completed false
+                                :editing false})))
 
 ;if replaced with when
 (defn key-press [e todo-state]
-  (if (= (.-key e) "Enter")
-    (add-todo todo-state)
-    nil))
+  (when (= (.-key e) "Enter")
+    (add-todo todo-state)))
 
 (defn input-change [e]
   (reset! todo-item (.-value (.-target e))))

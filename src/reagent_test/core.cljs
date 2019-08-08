@@ -17,75 +17,34 @@
 (def app-state (local-storage (atom ())
                               :app-state))
 
-;(def app-test-spike (atom (hash-map)))
+(def app-test-spike (atom (hash-map)))
 
-(defn update-item [item state]
-  (let [new-state (doall (map #(if        
-                                (= (:id %) (:id item)) 
-                                 item
-                                 %) 
-                              state))]
-    (reset! app-state new-state)))
-
-; can you introduce a generic update fn?, update this id to this item, or iten would actually have its own id. 
-; explore using a map id->item? need to deal with order somehow
-; remove local def
-; or explore using ->>
 (defn edit-item [e item-id]
-  (let [edit-state (map
-                    (fn [item]
-                      (if (= (:id item) item-id)
-                        (assoc item :editing true)
-                        item)) @app-state)]
-    (reset! app-state edit-state)))
+    (reset! app-test-spike (assoc-in @app-test-spike [item-id :editing] true)))
 
 (defn todo-complete [item-id]
+  (reset! app-test-spike (assoc-in @app-test-spike [item-id :completed] (not (:completed (get @app-test-spike item-id))))))
 
-  (let [test (first (filter 
-                     #(when 
-                       (= (:id %) item-id) 
-                        %) 
-                     @app-state))] 
-    (do 
-      (let 
-       [comp (not (:completed test))]
-        (update-item (assoc test :completed comp) @app-state)))))
-
-
-; consider just assoc the updated key
-; avoid lazy seq
-; consider doall with for or mapv (not lazy)
-(defn cancel-edit [e]
-  (let [cancel-edit-state (doall (map (fn [item] (assoc item :editing false)) @app-state))]
-    (reset! app-state cancel-edit-state)))
+(defn cancel-edit [e item-id]
+    (reset! app-test-spike (assoc-in @app-test-spike [item-id :editing] false)))
 
 (defn delete-item [item-id]
-  ; replace local def with let!
-  ; lazy remove!
-  (let [delete-item-state (doall (remove (fn [item] (= item-id (:id item))) @app-state))]
-    (reset! app-state delete-item-state)))
+    (reset! app-test-spike (dissoc @app-test-spike item-id)))
 
-; consider changing vector to map
 (defn change-item [event item]
-  ; replace local def with let!
-  (let [change-state (doall (map
-                             (fn [e]
-                               (if (= (:id e) (:id item))
-                                 (assoc e :title (.-value (.-target event)))
-                                 e)) @app-state))]
-    (reset! app-state change-state)))
+    (reset! app-test-spike (assoc-in @app-test-spike [(:id item) :title] (.-value (.-target event)))))
 
 (defn set-filter [filter]
   (reset! current-filter filter))
 
 (defn delete-completed-items []
-  ; replace local def with let!
-
-  (let [items-to-delete (map :id (filter #(= (:completed %) true) @app-state))]
-    (doseq [id items-to-delete]
-      (delete-item id))))
+  (println (map #(%) @app-test-spike)))
+  ; (let [items-to-delete (map :id (filter #(= (:completed %) true) @app-test-spike))]
+  ;   (doseq [id items-to-delete]
+  ;     (delete-item id))))
 
 (defn main-section [state]
+
   [:section {:class "todoapp"}
    [todo-header/component state]
    [:section {:class "main"}
@@ -94,10 +53,10 @@
              :type "checkbox"}]
     [:label {:htmlFor "toggle-all"} "Mark all as complete"]
     [:ul {:class "todo-list"}
-     (doall (for [item @app-state] (case @current-filter
-                                              ::all (todo-item/component item edit-item cancel-edit change-item delete-item todo-complete)
-                                              ::active (when (not (:completed item)) (todo-item/component item edit-item cancel-edit change-item delete-item todo-complete))
-                                              ::completed (when (:completed item) (todo-item/component item edit-item cancel-edit change-item delete-item todo-complete)))))]]
+     (doall (for [item @app-test-spike] (case @current-filter
+                                          ::all (todo-item/component (second item) edit-item cancel-edit change-item delete-item todo-complete)
+                                          ::active (when (not (:completed (second item))) (todo-item/component (second item) edit-item cancel-edit change-item delete-item todo-complete))
+                                          ::completed (when (:completed (second item)) (todo-item/component (second item) edit-item cancel-edit change-item delete-item todo-complete)))))]]
    [todo-footer/component (count @app-state) set-filter delete-completed-items]])
 
 (reagent/render-component [main-section app-state]
