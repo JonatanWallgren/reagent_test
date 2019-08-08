@@ -16,7 +16,6 @@
     [:label {:on-double-click (fn [e] (edit-callback e (:id item)))} (:title item)]
     [:button {:class "destroy"
               :on-click (fn [] (delete-item-callback (:id item)))}]]
-   ;replace if with when
    [:input {:class "edit"
             :value (:title item)
             :on-change (fn [event]

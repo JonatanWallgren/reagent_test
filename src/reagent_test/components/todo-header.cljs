@@ -5,13 +5,11 @@
 
 (defn add-todo [todo-state]
   (let [uuid (random-uuid)]
-
-    (swap! reagent-test.core/app-test-spike assoc uuid {:id uuid
+    (swap! reagent-test.core/app-state assoc uuid {:id uuid
                                 :title @todo-item
                                 :completed false
                                 :editing false})))
 
-;if replaced with when
 (defn key-press [e todo-state]
   (when (= (.-key e) "Enter")
     (add-todo todo-state)))
@@ -19,7 +17,6 @@
 (defn input-change [e]
   (reset! todo-item (.-value (.-target e))))
 
-;add component state
 (defn component [todo-state]
   [:header {:class "header"}
    [:h1 "Todos"]
