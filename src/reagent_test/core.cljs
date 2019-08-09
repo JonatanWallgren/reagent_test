@@ -7,31 +7,25 @@
 
 (enable-console-print!)
 
-(def ::all)
-(def ::completed)
-(def ::active)
+::all
+::completed
+::active
 
 (def current-filter (atom ::all))
 
 (def app-state (local-storage (atom (hash-map)) :app-state))
 
-(defn edit-item [e item-id]
-    (reset! app-state (assoc-in @app-state [item-id :editing] true)))
+(defn edit-item [e item-id] (reset! app-state (assoc-in @app-state [item-id :editing] true)))
 
-(defn todo-complete [item-id]
-  (reset! app-state (assoc-in @app-state [item-id :completed] (not (:completed (get @app-state item-id))))))
+(defn todo-complete [item-id] (reset! app-state (assoc-in @app-state [item-id :completed] (not (:completed (get @app-state item-id))))))
 
-(defn cancel-edit [e item-id]
-    (reset! app-state (assoc-in @app-state [item-id :editing] false)))
+(defn cancel-edit [e item-id] (reset! app-state (assoc-in @app-state [item-id :editing] false)))
 
-(defn delete-item [item-id]
-  (reset! app-state (dissoc @app-state item-id)))
+(defn delete-item [item-id] (reset! app-state (dissoc @app-state item-id)))
 
-(defn change-item [event item]
-    (reset! app-state (assoc-in @app-state [(:id item) :title] (.-value (.-target event)))))
+(defn change-item [event item] (reset! app-state (assoc-in @app-state [(:id item) :title] (.-value (.-target event)))))
 
-(defn set-filter [filter]
-  (reset! current-filter filter))
+(defn set-filter [filter] (reset! current-filter filter))
 
 (defn delete-completed-items []
   (doall (for [item @app-state] 
@@ -47,10 +41,11 @@
              :type "checkbox"}]
     [:label {:htmlFor "toggle-all"} "Mark all as complete"]
     [:ul {:class "todo-list"}
-     (doall (for [item @app-state] (case @current-filter
-                                          ::all (todo-item/component (second item) edit-item cancel-edit change-item delete-item todo-complete)
-                                          ::active (when (not (:completed (second item))) (todo-item/component (second item) edit-item cancel-edit change-item delete-item todo-complete))
-                                          ::completed (when (:completed (second item)) (todo-item/component (second item) edit-item cancel-edit change-item delete-item todo-complete)))))]]
+     (doall (for [item @app-state] 
+              (case @current-filter
+                ::all (todo-item/component (second item) edit-item cancel-edit change-item delete-item todo-complete)
+                ::active (when (not (:completed (second item))) (todo-item/component (second item) edit-item cancel-edit change-item delete-item todo-complete))
+                ::completed (when (:completed (second item)) (todo-item/component (second item) edit-item cancel-edit change-item delete-item todo-complete)))))]]
    [todo-footer/component (count @app-state) set-filter delete-completed-items]])
 
 (reagent/render-component [main-section app-state]
