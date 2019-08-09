@@ -3,7 +3,6 @@
 
 ;check destructure item
 (defn component [item edit-callback cancel-callback edit-item-callback delete-item-callback complete-item-callback]
-  
   [:li {:key (:id item)
         :class (cond
                  (:editing item) "editing"
@@ -11,8 +10,8 @@
    [:div {:class "view"}
     [:input {:class "toggle"
              :type "checkbox"
-             :value (:completed item)
-             :on-click (fn [] (complete-item-callback (:id item)))}]
+             :checked (:completed item)
+             :on-change (fn [] (complete-item-callback (:id item)))}]
     [:label {:on-double-click (fn [e] (edit-callback e (:id item)))} (:title item)]
     [:button {:class "destroy"
               :on-click (fn [] (delete-item-callback (:id item)))}]]
